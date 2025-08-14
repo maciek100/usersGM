@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -70,16 +71,25 @@ public class UserRepository {
 
     }
     //updateUser
-    public boolean updateUser(int id, String name, String occupation) {
-        return IntStream.range(0, myUsers.size())
-                .filter(i -> myUsers.get(i).id().equals(id))
-                .boxed()
-                .findFirst()
-                .map(i -> {
-                    myUsers.set(id, new User(id, name, occupation));
-                    return true;
-                })
-                .orElse(false);
-
+    public boolean updateUser(int targetId, String newName, String newOccupation) {
+//        AtomicBoolean changed = new AtomicBoolean(false);
+//        myUsers.replaceAll(user -> {
+//                    if (user.id().equals(id)) {
+//                        changed.set(true);
+//                        return new User(user.id(), user.name(), occupation);
+//                    }
+//                    return user;
+//                });
+//        return changed.get();
+        for (int i = 0; i < myUsers.size(); i++) {
+            User user = myUsers.get(i);
+            if (user.id().equals(targetId) && !user.occupation().equals(newOccupation)) {
+                myUsers.set(i, new User(user.id(),
+                        newName != null ? newName : user.name(),
+                        newOccupation != null ? newOccupation : user.occupation()));
+                return true;
+            }
+        }
+        return false;
     }
 }
