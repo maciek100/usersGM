@@ -9,28 +9,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    Logger logger = Logger.getLogger(UserController.class.getName());
     @Autowired
     UserRepository userRepository;
-
-    @GetMapping("/fufu")
-    public ResponseEntity<String> fufu () {
-        return ResponseEntity.ok("That is it.");
-    }
 
     //findAllUsers
    @GetMapping("/all")
     public ResponseEntity<List<User>> findAllUsers () {
         List<User> allUsers = userRepository.findAll();
-       System.out.println("ALL USERS COUNT IS " + allUsers.size());
+       logger.info("ALL USERS COUNT IS " + allUsers.size());
         return ResponseEntity.ok(allUsers);
     }
 
@@ -52,9 +48,8 @@ public class UserController {
     //deleteUser
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUserById (@PathVariable int id) {
-        System.out.println("attempting to delete User (" + id + ")");
        boolean deleted = userRepository.deleteUserById(id);
-        System.out.println("Deleted User (" + id + ")");
+        logger.info((deleted ? "Deleted" : "Failed to delete") + " User " + id + ")");
        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
 
     }

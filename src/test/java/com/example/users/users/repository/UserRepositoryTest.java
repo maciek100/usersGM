@@ -54,8 +54,7 @@ public class UserRepositoryTest {
         User user3 = new User(3, "Richard", "manager");
         userRepository.updateUser(user3.id(), user3.name(), user3.occupation());
         var promotedUser3 = userRepository.findUserById(3);
-        assertEquals(user3.name(), promotedUser3.get().name());
-        assertEquals(user3.occupation(), promotedUser3.get().occupation());
-
+        assertEquals(user3.name(), promotedUser3.map(User::name).orElse("Unknown"));
+        assertEquals(user3.occupation(), promotedUser3.map(User::occupation).orElse("Unknown"));
     }
 }
