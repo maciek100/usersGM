@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 @RestController
@@ -92,14 +93,13 @@ public class UserController {
     @GetMapping("/create")
     public ResponseEntity<List<User>> fancyStuff(@RequestParam(value = "name", required = false) String name) {
         List<User> sameNameUsers;
-        if (name == null || name.isBlank()) {
-            sameNameUsers = userRepository.findAll();
-        } else {
-            sameNameUsers = userRepository.findUserByName(name);
-        }
-        if(sameNameUsers.isEmpty())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(sameNameUsers);
+        Predicate<String> isPresent = str -> str != null && !str.isBlank();
+        sameNameUsers = isPresent.test(name)
+                ? userRepository.findUserByName(name)
+                : userRepository.findAll();
+        return sameNameUsers.isEmpty()
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(sameNameUsers);
     }
 
 }
