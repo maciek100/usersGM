@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,8 +59,7 @@ public class UserController {
     //addUser
     @PostMapping
     public  ResponseEntity<User> addUser(@RequestBody User user) {
-        boolean added = userRepository.addUser(user);
-        if(added) {
+        if(userRepository.addUser(user)) {
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(user.id())
@@ -75,19 +73,16 @@ public class UserController {
     @PostMapping("/addAll")
     public ResponseEntity<Map<String, Integer>> addAllUsers(@RequestBody List<User> users) {
        int addedCount = userRepository.addAllUsers(users);
-       Map<String, Integer> response = new HashMap<>();
-       response.put("requested", users.size());
-       response.put("added", addedCount);
+       Map<String, Integer> response = Map.of("requested", users.size(), "added", addedCount);
        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
     //updateUser
     @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
-       boolean updated = userRepository.updateUser(user.id(), user.name(), user.occupation());
-       if (updated)
-           return ResponseEntity.ok().build();
-       return ResponseEntity.notFound().build();
+       return userRepository.updateUser(user.id(), user.name(), user.occupation())
+               ? ResponseEntity.ok().build()
+               : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/create")
