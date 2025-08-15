@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Repository
 public class UserRepository {
@@ -72,15 +69,6 @@ public class UserRepository {
     }
     //updateUser
     public boolean updateUser(int targetId, String newName, String newOccupation) {
-//        AtomicBoolean changed = new AtomicBoolean(false);
-//        myUsers.replaceAll(user -> {
-//                    if (user.id().equals(id)) {
-//                        changed.set(true);
-//                        return new User(user.id(), user.name(), occupation);
-//                    }
-//                    return user;
-//                });
-//        return changed.get();
         for (int i = 0; i < myUsers.size(); i++) {
             User user = myUsers.get(i);
             if (user.id().equals(targetId) && !user.occupation().equals(newOccupation)) {

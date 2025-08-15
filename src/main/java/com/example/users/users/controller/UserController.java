@@ -2,7 +2,6 @@ package com.example.users.users.controller;
 
 import com.example.users.users.model.User;
 import com.example.users.users.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +18,12 @@ import java.util.logging.Logger;
 @RequestMapping("/user")
 public class UserController {
     Logger logger = Logger.getLogger(UserController.class.getName());
-    @Autowired
     UserRepository userRepository;
+
+    public UserController (UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     //findAllUsers
    @GetMapping("/all")
